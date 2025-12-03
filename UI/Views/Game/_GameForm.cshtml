@@ -1,0 +1,57 @@
+﻿@model UI.Models.GameViewModel
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="mb-3">
+    <label asp-for="Title" class="form-label"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="GenreId" class="form-label"></label>
+    <input asp-for="GenreId" class="form-control" />
+    <span asp-validation-for="GenreId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ReleaseDate" class="form-label"></label>
+    <input asp-for="ReleaseDate" class="form-control" type="date" />
+    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="DeveloperId" class="form-label"></label>
+    <input asp-for="DeveloperId" class="form-control" />
+    <span asp-validation-for="DeveloperId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="PublisherId" class="form-label"></label>
+    <input asp-for="PublisherId" class="form-control" />
+    <span asp-validation-for="PublisherId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Price" class="form-label"></label>
+    <input asp-for="Price" class="form-control" />
+    <span asp-validation-for="Price" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="PegiAge" class="form-label"></label>
+    <select asp-for="PegiAge" asp-items="Model.PegiOptions" class="form-select"></select>
+    <span asp-validation-for="PegiAge" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="CoverImageUrl" class="form-label"></label>
+    <input asp-for="CoverImageUrl" class="form-control" />
+    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>

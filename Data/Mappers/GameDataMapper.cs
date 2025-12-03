@@ -1,5 +1,6 @@
 ﻿using Data.Dtos;
 using Logic.Entities;
+using Logic.Enums;
 
 namespace Data.Mappers
 {
@@ -16,7 +17,7 @@ namespace Data.Mappers
                 DeveloperId = dto.DeveloperId,
                 PublisherId = dto.PublisherId,
                 Price = dto.Price,
-                PegiAge = dto.PegiAge,
+                PegiAge = (PegiAge)dto.PegiAge,
                 Description = dto.Description,
                 CoverImageUrl = dto.CoverImageUrl,
                 CreatedAt = dto.CreatedAt,
@@ -36,7 +37,7 @@ namespace Data.Mappers
                 DeveloperId = entity.DeveloperId,
                 PublisherId = entity.PublisherId,
                 Price = entity.Price,
-                PegiAge = entity.PegiAge,
+                PegiAge = (int)entity.PegiAge,
                 Description = entity.Description,
                 CoverImageUrl = entity.CoverImageUrl,
                 CreatedAt = entity.CreatedAt,

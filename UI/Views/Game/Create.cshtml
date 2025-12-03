@@ -1,0 +1,13 @@
+﻿@model UI.Models.GameViewModel
+
+@{
+    ViewData["Title"] = "Create Game";
+}
+
+<h1>Create Game</h1>
+
+<form asp-action="Create" method="post">
+    <partial name="_GameForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

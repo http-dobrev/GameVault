@@ -1,15 +1,14 @@
 using Data.Repos;
 using Logic.Interfaces;
+using Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// get connection string 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddScoped<IGameRepository>(sp => new GameRepository(connectionString));
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGameService, GameService>();
 
 var app = builder.Build();
 

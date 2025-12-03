@@ -1,9 +1,8 @@
-﻿
-using Logic.Enums;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Logic.Entities
+namespace UI.Models
 {
-    public class Game
+    public class GameViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
@@ -12,7 +11,7 @@ namespace Logic.Entities
         public int DeveloperId { get; set; }
         public int PublisherId { get; set; }
         public decimal Price { get; set; }
-        public PegiAge PegiAge { get; set; }
+        public int PegiAge { get; set; }
         public string Description { get; set; } = string.Empty;
         public string CoverImageUrl { get; set; } = string.Empty;
 
@@ -20,5 +19,13 @@ namespace Logic.Entities
         public DateTime UpdatedAt { get; set; }
 
         public int IsArchived { get; set; }
+
+
+
+        // For dropdown options
+        public IEnumerable<SelectListItem>? GenreOptions { get; set; }
+        public IEnumerable<SelectListItem>? DeveloperOptions { get; set; }
+        public IEnumerable<SelectListItem>? PublisherOptions { get; set; }
+        public IEnumerable<SelectListItem>? PegiOptions { get; set; }
     }
 }

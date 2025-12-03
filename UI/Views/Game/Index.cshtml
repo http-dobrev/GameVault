@@ -1,0 +1,40 @@
+﻿@model IEnumerable<UI.Models.GameViewModel>
+@{
+    ViewData["Title"] = "Games";
+}
+
+<h1>Games</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create new Game</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+            <th>PEGI</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var game in Model)
+        {
+            <tr>
+                <td>@game.Title</td>
+                <td>@game.GenreId</td> @* replace with name later *@
+                <td>@game.ReleaseDate</td>
+                <td>@game.PegiAge</td>
+                <td>@game.Price.ToString("0.00")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@game.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@game.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

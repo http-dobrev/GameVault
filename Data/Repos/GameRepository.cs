@@ -4,8 +4,7 @@ using Logic.Entities;
 using Logic.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Runtime.Intrinsics.Arm;
+
 
 namespace Data.Repos
 {
@@ -13,9 +12,10 @@ namespace Data.Repos
     {
         private readonly string _connectionString;
 
-        public GameRepository(string connectionString)
+        public GameRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string not found");
         }
 
         public void CreateGame(Game game)
@@ -23,7 +23,7 @@ namespace Data.Repos
             GameDto dto = GameDataMapper.ToDto(game);
 
             const string sql = @"
-                INSERT INTO Games (Title, GenreId, ReleaseDate, DeveloperId, PublisherId, Price, PegiAge, Description, CoverImageUrl, CreatedAt, UpdatedAt, IsArchived)
+                INSERT INTO Game (Title, GenreId, ReleaseDate, DeveloperId, PublisherId, Price, PegiAge, Description, CoverImageUrl, CreatedAt, UpdatedAt, IsArchived)
                 VALUES (@Title, @GenreId, @ReleaseDate, @DeveloperId, @PublisherId, @Price, @PegiAge, @Description, @CoverImageUrl, @CreatedAt, @UpdatedAt, @IsArchived)";
 
             var conn = new SqlConnection(_connectionString);
@@ -51,7 +51,7 @@ namespace Data.Repos
         {
             var games = new List<Game>();
 
-            const string sql = "SELECT * FROM Games WHERE IsArchived = 0";
+            const string sql = "SELECT * FROM Game WHERE IsArchived = 0";
 
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
@@ -88,7 +88,7 @@ namespace Data.Repos
 
         public Game? GetById(int id)
         {
-            const string sql = "SELECT * FROM Games WHERE Id = @Id AND IsArchived = 0";
+            const string sql = "SELECT * FROM Game WHERE Id = @Id AND IsArchived = 0";
 
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
@@ -127,7 +127,7 @@ namespace Data.Repos
         {
             GameDto dto = GameDataMapper.ToDto(game);
 
-            const string sql = @"UPDATE Games
+            const string sql = @"UPDATE Game
                                  SET Title = @Title,GenreId = @GenreId,ReleaseDate = @ReleaseDate,DeveloperId = @DeveloperId,PublisherId = @PublisherId,Price = @Price,PegiAge = @PegiAge,Description = @Description,CoverImageUrl = @CoverImageUrl,UpdatedAt = @UpdatedAt,IsArchived = @IsArchived
                                  WHERE Id = @Id";
 
@@ -154,7 +154,7 @@ namespace Data.Repos
 
         public void DeleteGame(int id)
         {
-            const string sql = @"DELETE FROM Games WHERE Id = @Id";
+            const string sql = @"DELETE FROM Game WHERE Id = @Id";
 
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
