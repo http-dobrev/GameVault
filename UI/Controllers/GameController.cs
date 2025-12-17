@@ -11,10 +11,16 @@ namespace UI.Controllers
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
+        private readonly IDeveloperService _developerService;
+        private readonly IGenreService _genreService;
+        private readonly IPublisherService _publisherService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, IDeveloperService developerService, IGenreService genreService, IPublisherService publisherService)
         {
             _gameService = gameService;
+            _developerService = developerService;
+            _genreService = genreService;
+            _publisherService = publisherService;
         }
 
         // GET: /Game
@@ -49,8 +55,23 @@ namespace UI.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var viewModel = new GameViewModel { ReleaseDate = DateTime.UtcNow };
+            var viewModel = new GameViewModel();
+
+            viewModel.ReleaseDate = DateTime.UtcNow;
             viewModel.PegiOptions = EnumHelper.GetPegiOptions();
+
+            viewModel.Developers = _developerService.GetAllDevelopers()
+                    .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
+                    .ToList();
+
+            viewModel.Genres = _genreService.GetAllGenres()
+                    .Select(g => new SelectListItem(g.Name, g.Id.ToString()))
+                    .ToList();
+
+            viewModel.Publishers = _publisherService.GetAllPublishers()
+                    .Select(p => new SelectListItem(p.Name, p.Id.ToString()))
+                    .ToList();
+
             return View(viewModel);
         }
 
@@ -62,6 +83,19 @@ namespace UI.Controllers
             if (!ModelState.IsValid)
             {
                 viewModel.PegiOptions = EnumHelper.GetPegiOptions();
+
+                viewModel.Developers = _developerService.GetAllDevelopers()
+                    .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
+                    .ToList();
+
+                viewModel.Genres = _genreService.GetAllGenres()
+                    .Select(g => new SelectListItem(g.Name, g.Id.ToString()))
+                    .ToList();
+
+                viewModel.Publishers = _publisherService.GetAllPublishers()
+                    .Select(p => new SelectListItem(p.Name, p.Id.ToString()))
+                    .ToList();
+
                 return View(viewModel);
             }
 

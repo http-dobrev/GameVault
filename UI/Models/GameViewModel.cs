@@ -21,9 +21,9 @@ namespace UI.Models
         public bool IsArchived { get; set; }
 
         // For dropdown options
-        public IEnumerable<SelectListItem>? GenreOptions { get; set; }
-        public IEnumerable<SelectListItem>? DeveloperOptions { get; set; }
-        public IEnumerable<SelectListItem>? PublisherOptions { get; set; }
+        public List<SelectListItem> Developers { get; set; } = [];
+        public List<SelectListItem> Genres { get; set; } = [];
+        public List<SelectListItem> Publishers { get; set; } = [];
         public IEnumerable<SelectListItem>? PegiOptions { get; set; }
     }
 }

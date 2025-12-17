@@ -7,8 +7,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Game service and repository registration
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
+
+// Developer service and repository registration
+builder.Services.AddScoped<IDeveloperRepository, DeveloperRepository>();
+builder.Services.AddScoped<IDeveloperService, DeveloperService>();
+
+// Genre service and repository registration
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+
+// Publisher service and repository registration
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 var app = builder.Build();
 
