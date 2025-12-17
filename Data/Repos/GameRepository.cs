@@ -66,16 +66,16 @@ namespace Data.Repos
                     Id = (int)reader["Id"],
                     Title = (string)reader["Title"],
                     GenreId = (int)reader["GenreId"],
-                    ReleaseDate = (DateOnly)reader["ReleaseDate"],
+                    ReleaseDate = (DateTime)reader["ReleaseDate"],
                     DeveloperId = (int)reader["DeveloperId"],
                     PublisherId = (int)reader["PublisherId"],
                     Price = (decimal)reader["Price"],
-                    PegiAge = (int)reader["PegiAge"],
+                    PegiAge = (byte)reader["PegiAge"],
                     Description = (string)reader["Description"],
                     CoverImageUrl = (string)reader["CoverImageUrl"],
                     CreatedAt = (DateTime)reader["CreatedAt"],
                     UpdatedAt = (DateTime)reader["UpdatedAt"],
-                    IsArchived = (int)reader["IsArchived"]
+                    IsArchived = (bool)reader["IsArchived"]
                 };
                 games.Add(GameDataMapper.ToEntity(dto));
             }
@@ -105,16 +105,16 @@ namespace Data.Repos
                 Id = (int)reader["Id"],
                 Title = (string)reader["Title"],
                 GenreId = (int)reader["GenreId"],
-                ReleaseDate = (DateOnly)reader["ReleaseDate"],
+                ReleaseDate = (DateTime)reader["ReleaseDate"],
                 DeveloperId = (int)reader["DeveloperId"],
                 PublisherId = (int)reader["PublisherId"],
                 Price = (decimal)reader["Price"],
-                PegiAge = (int)reader["PegiAge"],
+                PegiAge = (byte)reader["PegiAge"],
                 Description = (string)reader["Description"],
                 CoverImageUrl = (string)reader["CoverImageUrl"],
                 CreatedAt = (DateTime)reader["CreatedAt"],
                 UpdatedAt = (DateTime)reader["UpdatedAt"],
-                IsArchived = (int)reader["IsArchived"]
+                IsArchived = (bool)reader["IsArchived"]
             };
 
             reader.Close();

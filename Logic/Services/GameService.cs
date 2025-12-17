@@ -107,8 +107,8 @@ namespace Logic.Services
 
             // Basic sanity for release date (tune as you like)
             // --- DateOnly validation ---
-            var minReleaseDate = new DateOnly(1970, 1, 1);
-            var maxReleaseDate = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(2));
+            var minReleaseDate = new DateTime(1970, 1, 1);
+            var maxReleaseDate = DateTime.UtcNow.AddYears(2);
 
             if (game.ReleaseDate < minReleaseDate || game.ReleaseDate > maxReleaseDate)
                 errors.Add("ReleaseDate is invalid.");

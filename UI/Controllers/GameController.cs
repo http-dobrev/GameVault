@@ -49,7 +49,7 @@ namespace UI.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var viewModel = new GameViewModel { ReleaseDate = DateOnly.FromDateTime(DateTime.UtcNow) };
+            var viewModel = new GameViewModel { ReleaseDate = DateTime.UtcNow };
             viewModel.PegiOptions = EnumHelper.GetPegiOptions();
             return View(viewModel);
         }
