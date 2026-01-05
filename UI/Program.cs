@@ -1,6 +1,7 @@
 using Data.Repos;
 using Logic.Interfaces;
 using Logic.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,29 @@ builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 
+// Auth service registration
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Password hasher registration
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+// User repository registration
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/Login";
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        options.SlidingExpiration = true;
+    });
+
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,6 +62,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

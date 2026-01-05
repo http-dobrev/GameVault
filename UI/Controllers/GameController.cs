@@ -1,4 +1,5 @@
-﻿using Logic.Enums;
+﻿using Logic.Entities;
+using Logic.Enums;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -29,7 +30,7 @@ namespace UI.Controllers
         {
             var games = _gameService
                 .GetAllGames()
-                .Select(GameViewModelMapper.ToViewModel)
+                .Select(GameViewModelMapper.ToGameListViewModel)
                 .ToList();
 
             return View(games);
@@ -37,12 +38,12 @@ namespace UI.Controllers
 
         // GET: /Game/Details/5
         [HttpGet]
-        public IActionResult Details(int id)
+        public IActionResult Details(Game game)
         {
             try
             {
-                var game = _gameService.GetById(id);
-                var vm = GameViewModelMapper.ToViewModel(game);
+                var foundGame = _gameService.GetGame(game);
+                var vm = GameViewModelMapper.ToGameListViewModel(foundGame);
                 return View(vm);
             }
             catch (ArgumentException)
@@ -55,22 +56,12 @@ namespace UI.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var viewModel = new GameViewModel();
-
+            var viewModel = new GameFormViewModel();
+            
             viewModel.ReleaseDate = DateTime.UtcNow;
             viewModel.PegiOptions = EnumHelper.GetPegiOptions();
 
-            viewModel.Developers = _developerService.GetAllDevelopers()
-                    .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
-                    .ToList();
-
-            viewModel.Genres = _genreService.GetAllGenres()
-                    .Select(g => new SelectListItem(g.Name, g.Id.ToString()))
-                    .ToList();
-
-            viewModel.Publishers = _publisherService.GetAllPublishers()
-                    .Select(p => new SelectListItem(p.Name, p.Id.ToString()))
-                    .ToList();
+            PopulateDropdowns(viewModel);
 
             return View(viewModel);
         }
@@ -78,23 +69,13 @@ namespace UI.Controllers
         // POST: /Game/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(GameViewModel viewModel)
+        public IActionResult Create(GameFormViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
                 viewModel.PegiOptions = EnumHelper.GetPegiOptions();
 
-                viewModel.Developers = _developerService.GetAllDevelopers()
-                    .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
-                    .ToList();
-
-                viewModel.Genres = _genreService.GetAllGenres()
-                    .Select(g => new SelectListItem(g.Name, g.Id.ToString()))
-                    .ToList();
-
-                viewModel.Publishers = _publisherService.GetAllPublishers()
-                    .Select(p => new SelectListItem(p.Name, p.Id.ToString()))
-                    .ToList();
+                PopulateDropdowns(viewModel);
 
                 return View(viewModel);
             }
@@ -114,23 +95,27 @@ namespace UI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(Game game)
         {
-            if (id <= 0)
+            if (game.Id <= 0)
                 return BadRequest();
 
-            var game = _gameService.GetById(id);
-            if (game == null)
+            var foundGame = _gameService.GetGame(game);
+            if (foundGame == null)
                 return NotFound();
 
-            var viewModel = GameViewModelMapper.ToViewModel(game);
+            var viewModel = GameViewModelMapper.ToGameFormViewModel(foundGame);
+
+            PopulateDropdowns(viewModel);
+            viewModel.PegiOptions = EnumHelper.GetPegiOptions();
+
             return View(viewModel);
         }
 
         // POST: /Game/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, GameViewModel viewModel)
+        public IActionResult Edit(int id, GameFormViewModel viewModel)
         {
             if (id != viewModel.Id)
                 return BadRequest();
@@ -138,6 +123,7 @@ namespace UI.Controllers
             if (!ModelState.IsValid)
             {
                 viewModel.PegiOptions = EnumHelper.GetPegiOptions();
+                PopulateDropdowns(viewModel);
                 return View(viewModel);
             }
    
@@ -151,40 +137,43 @@ namespace UI.Controllers
             catch (ArgumentException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
+                PopulateDropdowns(viewModel);
+                viewModel.PegiOptions = EnumHelper.GetPegiOptions();
                 return View(viewModel);
-            }
-        }
-
-        // GET: /Game/Delete/5
-        [HttpGet]
-        public IActionResult Delete(int id)
-        {
-            try
-            {
-                var game = _gameService.GetById(id);
-                var vm = GameViewModelMapper.ToViewModel(game);
-                return View(vm);
-            }
-            catch (ArgumentException)
-            {
-                return NotFound();
             }
         }
 
         // POST: /Game/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult Delete(Game game)
         {
             try
             {
-                _gameService.DeleteGame(id);
+                _gameService.ArchiveGame(game);
                 return RedirectToAction(nameof(Index));
             }
             catch (ArgumentException)
             {
                 return NotFound();
             }
+        }
+
+        private void PopulateDropdowns(GameFormViewModel vm)
+        {
+                vm.PegiOptions = EnumHelper.GetPegiOptions();
+
+            vm.Genres = _genreService.GetAllGenres()
+                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Name })
+                .ToList();
+
+            vm.Developers = _developerService.GetAllDevelopers()
+                .Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name })
+                .ToList();
+
+            vm.Publishers = _publisherService.GetAllPublishers()
+                .Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name })
+                .ToList();
         }
     }
 }

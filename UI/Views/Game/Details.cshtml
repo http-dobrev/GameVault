@@ -1,0 +1,93 @@
+﻿@model UI.Models.GameListViewModel
+
+@{
+    ViewData["Title"] = "Game Details - " + @Model.Title;
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="m-0">@Model.Title</h1>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Cover -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm">
+                @if (!string.IsNullOrWhiteSpace(Model.CoverImageURL))
+                {
+                    <img src="@Model.CoverImageURL"
+                         class="card-img-top"
+                         alt="@Model.Title cover"
+                         style="object-fit: cover; max-height: 420px;" />
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center"
+                         style="height: 420px;">
+                        <span class="text-muted">No cover image available</span>
+                    </div>
+                }
+
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-dark">PEGI @Model.PegiAge</span>
+                        <span class="badge bg-secondary">@Model.GenreName</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Info</h5>
+
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Genre</dt>
+                        <dd class="col-sm-8">@Model.GenreName</dd>
+
+                        <dt class="col-sm-4">Release Date</dt>
+                        <dd class="col-sm-8">@Model.ReleaseDate.ToString("dd-MM-yyyy")</dd>
+
+                        <dt class="col-sm-4">Developer</dt>
+                        <dd class="col-sm-8">@Model.DeveloperName</dd>
+
+                        <dt class="col-sm-4">Publisher</dt>
+                        <dd class="col-sm-8">@Model.PublisherName</dd>
+
+                        <dt class="col-sm-4">Price</dt>
+                        @if (Model.Price == 0)
+                        {
+                            <dd class="col-sm-8">Free</dd>
+                        }
+                        else
+                        {
+                            <dd class="col-sm-8">@Model.Price.ToString("0.00")</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Description</h5>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <p class="mb-0" style="white-space: pre-wrap;">@Model.Description</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No description provided.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

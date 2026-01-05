@@ -18,23 +18,26 @@ namespace Logic.Services
             return _gameRepository.GetAllGames();
         }
 
-        public Game? GetById(int id)
+        public Game? GetGame(Game game)
         {
-            if (id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than 0.");
+            if (game.Id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(game.Id), "Id must be greater than 0.");
 
-            var game = _gameRepository.GetById(id);
+            var foundGame = _gameRepository.GetGame(game);
 
-            if (game == null)
-                throw new KeyNotFoundException($"Game with id {id} was not found.");
+            if (foundGame == null)
+                throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
 
-            return game;
+            return foundGame;
         }
 
         public void CreateGame(Game game)
         {
             if (game == null)
                 throw new ArgumentNullException(nameof(game), "Game cannot be null.");
+
+            if (_gameRepository.GameExists(game.Title))
+                throw new ArgumentException($"A game with the title '{game.Title}' already exists.", nameof(game.Title));
 
             var errors = ValidateGame(game);
             if (errors.Any())
@@ -65,23 +68,23 @@ namespace Logic.Services
                 throw new ArgumentException(message, nameof(game));
             }
 
-            var existing = _gameRepository.GetById(game.Id);
+            var existing = _gameRepository.GetGame(game);
             if (existing == null)
                 throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
 
             _gameRepository.UpdateGame(game);
         }
 
-        public void DeleteGame(int id)
+        public void ArchiveGame(Game game)
         {
-            if (id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than 0.");
+            if (game.Id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(game.Id), "Id must be greater than 0.");
 
-            var existing = _gameRepository.GetById(id);
+            var existing = _gameRepository.GetGame(game);
             if (existing == null)
-                throw new KeyNotFoundException($"Game with id {id} was not found.");
+                throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
 
-            _gameRepository.DeleteGame(id);
+            _gameRepository.ArchiveGame(game);
         }
 
         /// <summary>

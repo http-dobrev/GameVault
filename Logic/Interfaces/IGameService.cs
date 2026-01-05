@@ -5,10 +5,9 @@ namespace Logic.Interfaces
     public interface IGameService
     {
         IEnumerable<Game> GetAllGames();
-        Game? GetById(int id);
-
+        Game? GetGame(Game game);
         void CreateGame(Game game);
         void UpdateGame(Game game);
-        void DeleteGame(int id);
+        void ArchiveGame(Game game);
     }
 }

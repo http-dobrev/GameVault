@@ -18,6 +18,61 @@ namespace Data.Repos
                 ?? throw new InvalidOperationException("Connection string not found");
         }
 
+        public IEnumerable<Game> GetAllGames()
+        {
+            var games = new List<Game>();
+            const string sql = @"SELECT
+                                    g.Id,
+                                    g.Title,
+                                    g.GenreId,
+                                    ge.Name AS GenreName,
+                                    g.DeveloperId,
+                                    d.Name AS DeveloperName,
+                                    g.PublisherId,
+                                    p.Name AS PublisherName,
+                                    g.ReleaseDate,
+                                    g.Price,
+                                    g.PegiAge,
+                                    g.Description,
+                                    g.CoverImageUrl,
+                                    g.CreatedAt,
+                                    g.UpdatedAt,
+                                    g.IsArchived
+                                FROM Game g
+                                INNER JOIN Genre ge ON ge.Id = g.GenreId
+                                INNER JOIN Developer d  ON d.Id  = g.DeveloperId
+                                INNER JOIN Publisher p  ON p.Id  = g.PublisherId
+                                WHERE g.IsArchived = 0
+                                ORDER BY g.Title;";
+            var conn = new SqlConnection(_connectionString);
+            var cmd = new SqlCommand(sql, conn);
+            conn.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var dto = new GameDto
+                {
+                    Id = (int)reader["Id"],
+                    Title = (string)reader["Title"],
+                    GenreName = (string)reader["GenreName"],
+                    ReleaseDate = (DateTime)reader["ReleaseDate"],
+                    DeveloperName = (string)reader["DeveloperName"],
+                    PublisherName = (string)reader["PublisherName"],
+                    Price = (decimal)reader["Price"],
+                    PegiAge = (byte)reader["PegiAge"],
+                    Description = (string)reader["Description"],
+                    CoverImageUrl = (string)reader["CoverImageUrl"],
+                    CreatedAt = (DateTime)reader["CreatedAt"],
+                    UpdatedAt = (DateTime)reader["UpdatedAt"],
+                    IsArchived = (bool)reader["IsArchived"]
+                };
+                games.Add(GameDataMapper.ToEntity(dto));
+            }
+            reader.Close();
+            conn.Close();
+            return games;
+        }
+
         public void CreateGame(Game game)
         {
             GameDto dto = GameDataMapper.ToDto(game);
@@ -47,67 +102,52 @@ namespace Data.Repos
             conn.Close();
         }
 
-        public IEnumerable<Game> GetAllGames()
+        public Game? GetGame(Game game)
         {
-            var games = new List<Game>();
-
-            const string sql = "SELECT * FROM Game WHERE IsArchived = 0";
+            const string sql = @"SELECT
+                                    g.Id,
+                                    g.Title,
+                                    g.GenreId,
+                                    ge.Name AS GenreName,
+                                    g.DeveloperId,
+                                    d.Name AS DeveloperName,
+                                    g.PublisherId,
+                                    p.Name AS PublisherName,
+                                    g.ReleaseDate,
+                                    g.Price,
+                                    g.PegiAge,
+                                    g.Description,
+                                    g.CoverImageUrl,
+                                    g.CreatedAt,
+                                    g.UpdatedAt,
+                                    g.IsArchived
+                                FROM Game g
+                                INNER JOIN Genre ge ON ge.Id = g.GenreId
+                                INNER JOIN Developer d  ON d.Id  = g.DeveloperId
+                                INNER JOIN Publisher p  ON p.Id  = g.PublisherId
+                                WHERE g.Id = @Id AND g.IsArchived = 0";
 
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
 
-            conn.Open();
-            var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var dto = new GameDto
-                {
-                    Id = (int)reader["Id"],
-                    Title = (string)reader["Title"],
-                    GenreId = (int)reader["GenreId"],
-                    ReleaseDate = (DateTime)reader["ReleaseDate"],
-                    DeveloperId = (int)reader["DeveloperId"],
-                    PublisherId = (int)reader["PublisherId"],
-                    Price = (decimal)reader["Price"],
-                    PegiAge = (byte)reader["PegiAge"],
-                    Description = (string)reader["Description"],
-                    CoverImageUrl = (string)reader["CoverImageUrl"],
-                    CreatedAt = (DateTime)reader["CreatedAt"],
-                    UpdatedAt = (DateTime)reader["UpdatedAt"],
-                    IsArchived = (bool)reader["IsArchived"]
-                };
-                games.Add(GameDataMapper.ToEntity(dto));
-            }
-
-            reader.Close();
-            conn.Close();
-
-            return games;
-        }
-
-        public Game? GetById(int id)
-        {
-            const string sql = "SELECT * FROM Game WHERE Id = @Id AND IsArchived = 0";
-
-            var conn = new SqlConnection(_connectionString);
-            var cmd = new SqlCommand(sql, conn);
-
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Parameters.AddWithValue("@Id", game.Id);
 
             conn.Open();
             var reader = cmd.ExecuteReader();
 
             if (!reader.Read()) return null;
-            
+
             var dto = new GameDto
             {
                 Id = (int)reader["Id"],
                 Title = (string)reader["Title"],
                 GenreId = (int)reader["GenreId"],
+                GenreName = (string)reader["GenreName"],
                 ReleaseDate = (DateTime)reader["ReleaseDate"],
                 DeveloperId = (int)reader["DeveloperId"],
+                DeveloperName = (string)reader["DeveloperName"],
                 PublisherId = (int)reader["PublisherId"],
+                PublisherName = (string)reader["PublisherName"],
                 Price = (decimal)reader["Price"],
                 PegiAge = (byte)reader["PegiAge"],
                 Description = (string)reader["Description"],
@@ -121,6 +161,23 @@ namespace Data.Repos
             conn.Close();
 
             return GameDataMapper.ToEntity(dto);
+        }
+
+        public bool GameExists(string title)
+        {
+            const string sql = "SELECT COUNT(1) FROM Game WHERE Title = @Title AND IsArchived = 0";
+
+            var conn = new SqlConnection(_connectionString);
+            var cmd = new SqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@Title", title);
+
+            conn.Open();
+            int count = (int)cmd.ExecuteScalar();
+            conn.Close();
+
+            // if count > 0, the game exists. if count is 0 , it does not exist.
+            return count > 0;
         }
 
         public void UpdateGame(Game game)
@@ -144,7 +201,7 @@ namespace Data.Repos
             cmd.Parameters.AddWithValue("@PegiAge", dto.PegiAge);
             cmd.Parameters.AddWithValue("@Description", dto.Description);
             cmd.Parameters.AddWithValue("@CoverImageUrl", dto.CoverImageUrl);
-            cmd.Parameters.AddWithValue("@UpdatedAt", dto.UpdatedAt);
+            cmd.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
             cmd.Parameters.AddWithValue("@IsArchived", dto.IsArchived);
 
             conn.Open();
@@ -152,14 +209,14 @@ namespace Data.Repos
             conn.Close();
         }
 
-        public void DeleteGame(int id)
+        public void ArchiveGame(Game game)
         {
-            const string sql = @"DELETE FROM Game WHERE Id = @Id";
+            const string sql = @"UPDATE Game SET IsArchived = 1 WHERE Id = @Id";
 
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Parameters.AddWithValue("@Id", game.Id);
 
             conn.Open();
             cmd.ExecuteNonQuery();

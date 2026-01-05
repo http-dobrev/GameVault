@@ -5,10 +5,10 @@ namespace Logic.Interfaces
     public interface IGameRepository
     {
         IEnumerable<Game> GetAllGames();
-        Game? GetById(int id);
-
+        Game? GetGame(Game game);
+        bool GameExists(string title);
         void CreateGame(Game game);
         void UpdateGame(Game game);
-        void DeleteGame(int id);
+        void ArchiveGame(Game game);
     }
 }

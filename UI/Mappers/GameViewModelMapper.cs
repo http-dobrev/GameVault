@@ -6,9 +6,26 @@ namespace UI.Mappers
 {
     public static class GameViewModelMapper
     {
-        public static GameViewModel ToViewModel(Game game)
+        public static GameListViewModel ToGameListViewModel(Game game)
         {
-            return new GameViewModel
+            return new GameListViewModel
+            {
+                Id = game.Id,
+                Title = game.Title,
+                GenreName = game.GenreName,
+                ReleaseDate = game.ReleaseDate,
+                DeveloperName = game.DeveloperName,
+                PublisherName = game.PublisherName,
+                Price = game.Price,
+                PegiAge = (int)game.PegiAge,
+                Description = game.Description,
+                CoverImageURL = game.CoverImageUrl
+            };
+        }
+
+        public static GameFormViewModel ToGameFormViewModel(Game game)
+        {
+            return new GameFormViewModel
             {
                 Id = game.Id,
                 Title = game.Title,
@@ -26,7 +43,7 @@ namespace UI.Mappers
             };
         }
 
-        public static Game ToEntity(GameViewModel viewModel)
+        public static Game ToEntity(GameFormViewModel viewModel)
         {
             return new Game
             {

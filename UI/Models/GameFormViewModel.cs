@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace UI.Models
 {
-    public class GameViewModel
+    public class GameFormViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public int GenreId { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
+
         public int DeveloperId { get; set; }
         public int PublisherId { get; set; }
         public decimal Price { get; set; }

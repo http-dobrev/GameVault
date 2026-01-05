@@ -1,6 +1,7 @@
-﻿@model UI.Models.GameViewModel
+﻿@model UI.Models.GameFormViewModel
 
 <div asp-validation-summary="All" class="text-danger"></div>
+
 
 <div class="mb-3">
     <label asp-for="Title" class="form-label"></label>
@@ -10,9 +11,7 @@
 
 <div class="mb-3">
     <label asp-for="GenreId" class="form-label">Genre</label>
-    <select asp-for="GenreId" asp-items="Model.Genres" class="form-select">
-        <option value="">-- Select genre --</option>
-    </select>
+    <select asp-for="GenreId" asp-items="Model.Genres" class="form-select"></select>
 </div>
 
 <div class="mb-3">
@@ -22,17 +21,13 @@
 </div>
 
 <div class="mb-3">
-   <label asp-for="DeveloperId" class="form-label">Developer</label>
-    <select asp-for="DeveloperId" asp-items="Model.Developers" class="form-select">
-        <option value="">-- Select developer --</option>
-    </select>
+    <label asp-for="DeveloperId" class="form-label">Developer</label>
+    <select asp-for="DeveloperId" asp-items="Model.Developers" class="form-select"></select>
 </div>
 
 <div class="mb-3">
-    <label asp-for="PublisherId" class="form-label">Publisher</label>
-    <select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select">
-        <option value="">-- Select publisher --</option>
-    </select>
+    <label asp-for="PublisherId" class="form-label">Developer</label>
+    <select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select"></select>
 </div>
 
 <div class="mb-3">

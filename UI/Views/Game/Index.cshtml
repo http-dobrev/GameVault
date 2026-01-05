@@ -1,4 +1,4 @@
-﻿@model IEnumerable<UI.Models.GameViewModel>
+﻿@model IEnumerable<GameListViewModel>
 @{
     ViewData["Title"] = "Games";
 }
@@ -12,11 +12,14 @@
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>Id</th>
             <th>Title</th>
             <th>Genre</th>
             <th>Release Date</th>
-            <th>PEGI</th>
+            <th>Developer</th>
+            <th>Publisher</th>
             <th>Price</th>
+            <th>PEGI</th>
             <th></th>
         </tr>
     </thead>
@@ -24,15 +27,31 @@
         @foreach (var game in Model)
         {
             <tr>
+                <td>@game.Id</td>
                 <td>@game.Title</td>
-                <td>@game.GenreId</td> @* replace with name later *@
-                <td>@game.ReleaseDate</td>
+                <td>@game.GenreName</td>
+                <td>@game.ReleaseDate.ToString("dd-MM-yyyy")</td>
+                <td>@game.DeveloperName</td>
+                <td>@game.PublisherName</td>
+                @if(game.Price == 0)
+                {
+                    <td>Free</td>
+                } else
+                {
+                    <td>@game.Price.ToString("0.00")</td>
+                }
                 <td>@game.PegiAge</td>
-                <td>@game.Price.ToString("0.00")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@game.Id">Details</a> |
                     <a asp-action="Edit" asp-route-id="@game.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+                    <form method="post"
+                          asp-controller="Game"
+                          asp-action="Delete"
+                          asp-route-id="@game.Id"
+                          onsubmit="return confirm('Are you sure you want to delete this game? This cannot be undone.');"style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 </td>
             </tr>
         }
