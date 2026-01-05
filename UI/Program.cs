@@ -33,6 +33,12 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 // User repository registration
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// User game repository registration
+builder.Services.AddScoped<IUserGameRepository, UserGameRepository>();
+
+// User game service registration
+builder.Services.AddScoped<IUserGameService, UserGameService>();
+
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

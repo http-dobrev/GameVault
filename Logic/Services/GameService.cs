@@ -42,9 +42,7 @@ namespace Logic.Services
             var errors = ValidateGame(game);
             if (errors.Any())
             {
-                // You could create a custom ValidationException; for now, keep it simple.
-                var message = string.Join(Environment.NewLine, errors);
-                throw new ArgumentException(message, nameof(game));
+                throw new ArgumentException("Game validation failed: " + string.Join("; ", errors));
             }
 
             game.CreatedAt = DateTime.UtcNow;
@@ -121,7 +119,6 @@ namespace Logic.Services
 
             if (!Enum.IsDefined(typeof(PegiAge), game.PegiAge))
                 errors.Add("Invalid PEGI age rating.");
-
 
             if (string.IsNullOrWhiteSpace(game.Description))
                 errors.Add("Description is required.");

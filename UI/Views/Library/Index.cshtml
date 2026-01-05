@@ -1,5 +1,63 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<LibraryListItemVM>
 @{
+    ViewData["Title"] = "My Library";
 }
+
+<div class="container mt-4">
+    <h2 class="mb-4">Game Library</h2>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Platform</th>
+                    <th>Status</th>
+                    <th>Price Paid</th>
+                    <th>Hours</th>
+                    <th>Dates</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var game in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@game.CoverImageURL" alt="@game.Title"
+                                 style="width: 50px; height: 70px; object-fit: cover;"
+                                 class="rounded shadow-sm"
+                                 onerror="this.src='/images/no-cover.png';" />
+                        </td>
+                        <td><strong>@game.Title</strong></td>
+                        <td><span class="badge bg-secondary">@game.GenreName</span></td>
+                        <td>@game.Platform</td>
+                        <td>
+                            @* Conditional styling for Status *@
+                            <span class="badge @(game.Status == "Completed" ? "bg-success" : "bg-primary")">
+                                @game.Status
+                            </span>
+                        </td>
+                        <td>@game.PricePaid.ToString("C")</td> @* Formats as Currency *@
+                        <td>@game.HoursPlayed hrs</td>
+                        <td>
+                            <small class="text-muted d-block">Owned: @game.OwnedSince.ToShortDateString()</small>
+                            <small class="text-muted d-block">Added: @game.AddedAt.ToShortDateString()</small>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(game.Notes))
+                            {
+                                <button type="button" class="btn btn-sm btn-outline-info"
+                                        data-bs-toggle="tooltip" title="@game.Notes">
+                                    View Note
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

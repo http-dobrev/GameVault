@@ -100,7 +100,7 @@ namespace UI.Controllers
                     principal,
                     authProperties);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
             }
             catch (ArgumentException)
             {
