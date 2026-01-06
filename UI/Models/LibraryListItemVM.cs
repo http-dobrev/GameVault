@@ -4,7 +4,6 @@ namespace UI.Models
 {
     public class LibraryListItemVM
     {
-        public int GameId;
         public string Title = string.Empty;
         public string GenreName = string.Empty;
         public string Status = string.Empty;

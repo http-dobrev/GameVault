@@ -18,7 +18,7 @@ namespace Logic.Services
             _passwordHasher = passwordHasher;
         }
 
-        public void Register(RegisterRequest request)
+        public void Register(UserRegisterRequest request)
         {
             // Basic defensive checks (logic-level)
             if (string.IsNullOrWhiteSpace(request.Email) ||

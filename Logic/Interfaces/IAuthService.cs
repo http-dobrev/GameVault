@@ -4,7 +4,7 @@ namespace Logic.Interfaces
 {
     public interface IAuthService
     {
-        void Register(RegisterRequest request);
+        void Register(UserRegisterRequest request);
         User Login(LoginRequest request);
     }
 }

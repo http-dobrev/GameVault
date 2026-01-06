@@ -10,7 +10,6 @@ namespace UI.Mappers
         {
             return new LibraryListItemVM
             {
-                GameId = userGame.Game.Id,
                 Title = userGame.Game.Title,
                 GenreName = userGame.Game.GenreName,
                 Status = userGame.Status.ToString(),

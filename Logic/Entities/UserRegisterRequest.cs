@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Logic.Entities
 {
-    public class RegisterRequest
+    public class UserRegisterRequest
     {
         public string Email { get; init; }
         public string Username { get; init; }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
 using System.Security.Claims;
+using UI.Mappers;
 using UI.Models;
 
 namespace UI.Controllers
@@ -34,12 +35,7 @@ namespace UI.Controllers
 
             try
             {
-                var request = new RegisterRequest
-                {
-                    Username = userRegisterViewModel.Username,
-                    Email = userRegisterViewModel.Email,
-                    Password = userRegisterViewModel.Password
-                };
+                var request = UserAuthMapper.ToRegisterRequest(userRegisterViewModel);
 
                 _authService.Register(request);
                 return RedirectToAction(nameof(Login));
@@ -66,11 +62,7 @@ namespace UI.Controllers
 
             try
             {
-                var request = new LoginRequest
-                {
-                    EmailOrUsername = vm.EmailOrUsername,
-                    Password = vm.Password
-                };
+                var request = UserAuthMapper.ToLoginRequest(vm);
 
                 var user = _authService.Login(request);
 
@@ -100,7 +92,7 @@ namespace UI.Controllers
                     principal,
                     authProperties);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","Game");
             }
             catch (ArgumentException)
             {
