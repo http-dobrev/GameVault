@@ -1,12 +1,11 @@
-﻿using Data.Dtos;
-using Data.Mappers;
+﻿using Logic.Dtos;
+using Logic.Mappers;
 using Logic.Entities;
 using Logic.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Data;
 
-namespace Data.Repos
+namespace Logic.Repos
 {
     public class UserRepository : IUserRepository
     {
@@ -48,7 +47,7 @@ namespace Data.Repos
             return count > 0;
         }
 
-        public User? GetByEmail(string email)
+        public UserDto? GetByEmail(string email)
         {
             const string sql = @"
                 SELECT Id, Username, Email, PasswordHash, Role, CreatedAt, IsArchived
@@ -77,10 +76,10 @@ namespace Data.Repos
                 IsArchived = reader.GetBoolean(reader.GetOrdinal("IsArchived"))
             };
 
-            return UserDataMapper.UserDtoToEntity(dto);
+            return dto;
         }
 
-        public User? GetByUsername(string username)
+        public UserDto? GetByUsername(string username)
         {
             const string sql = @"
                 SELECT Id, Username, Email, PasswordHash, Role, CreatedAt, IsArchived
@@ -109,13 +108,11 @@ namespace Data.Repos
                 IsArchived = reader.GetBoolean(reader.GetOrdinal("IsArchived"))
             };
 
-            return UserDataMapper.UserDtoToEntity(dto);
+            return dto;
         }
 
-        public int CreateUser(User user)
+        public int CreateUser(UserDto dto)
         {
-            var dto = UserDataMapper.UserEntityToDto(user);
-
             const string sql = @"
                 INSERT INTO [User] (Username, Email, PasswordHash, Role, CreatedAt, IsArchived)
                 OUTPUT INSERTED.Id

@@ -1,9 +1,9 @@
-﻿using Data.Dtos;
+﻿using Logic.Dtos;
 using Logic.Entities;
 
-namespace Data.Mappers
+namespace Logic.Mappers
 {
-    public static class DeveloperDataMapper
+    public static class DeveloperMapper
     {
         public static Developer ToEntity(DeveloperDto dto)
         {

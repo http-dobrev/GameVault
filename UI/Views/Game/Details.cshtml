@@ -10,12 +10,17 @@
         <h1 class="m-0">@Model.Title</h1>
 
         <div class="d-flex gap-2">
-            <form asp-controller="Library" asp-action="Create" method="post">
-                <input type="hidden" name="GameId" value="@Model.Id" />
-                <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+            @if (!Model.IsOwned)
+            {
+                <form asp-controller="Library" asp-action="Create" method="post">
+                    <input type="hidden" name="GameId" value="@Model.Id" />
+                    <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
 
-                <button type="submit" class="btn btn-primary">Add to My Library</button>
-            </form>
+                    <button type="submit" class="btn btn-primary">Add to My Library</button>
+                </form>
+            } else {
+                <a asp-controller="Library" asp-action="Index" class="btn btn-success">View in My Library</a>
+            }
             <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
         </div>

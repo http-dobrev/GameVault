@@ -1,5 +1,7 @@
 ﻿using Logic.Entities;
 using Logic.Interfaces;
+using Logic.Dtos;
+using Logic.Mappers;
 
 namespace Logic.Services
 {
@@ -14,7 +16,13 @@ namespace Logic.Services
 
         public IEnumerable<Developer> GetAllDevelopers()
         {
-            return _developerRepository.GetAllDevelopers();
+            var developerDtos = _developerRepository.GetAllDevelopers();
+            var developers = new List<Developer>();
+            foreach (var dto in developerDtos)
+            {
+                developers.Add(DeveloperMapper.ToEntity(dto));
+            }
+            return developers;
         }
     }
 }

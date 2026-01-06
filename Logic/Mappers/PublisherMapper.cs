@@ -1,9 +1,9 @@
-﻿using Data.Dtos;
+﻿using Logic.Dtos;
 using Logic.Entities;
 
-namespace Data.Mappers
+namespace Logic.Mappers
 {
-    public static class PublisherDataMapper
+    public static class PublisherMapper
     {
         public static Publisher ToEntity(PublisherDto dto)
         {

@@ -1,9 +1,9 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
+using Logic.Entities;
 using Logic.Enums;
 using Logic.Interfaces;
-using System.Security.Authentication;
-using System.Text;
-using System.Text.RegularExpressions;
+using Logic.Mappers;
+
 
 namespace Logic.Services
 {
@@ -52,9 +52,9 @@ namespace Logic.Services
                 CreatedAt = DateTime.UtcNow,
                 IsArchived = true
             };
-
-            // Save to repository
-            _userRepository.CreateUser(newUser);
+            
+            var userDto = UserMapper.UserEntityToDto(newUser);
+            _userRepository.CreateUser(userDto);
         }
 
         public User Login(LoginRequest request)
@@ -65,23 +65,25 @@ namespace Logic.Services
                 throw new ArgumentException("Invalid login data.");
             }
 
-            User? user;
+            UserDto? userDto;
 
             // Decide how to fetch user
             if (request.EmailOrUsername.Contains("@"))
             {
-                user = _userRepository.GetByEmail(
+                userDto = _userRepository.GetByEmail(
                     request.EmailOrUsername.Trim().ToLowerInvariant());
             }
             else
             {
-                user = _userRepository.GetByUsername(
+                userDto = _userRepository.GetByUsername(
                     request.EmailOrUsername.Trim());
             }
 
             // Same error whether user exists or not (security)
-            if (user == null)
+            if (userDto == null)
                 throw new ArgumentException("Invalid Credentials");
+
+            var user = UserMapper.UserDtoToEntity(userDto);
 
             // Verify password
             if (!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))

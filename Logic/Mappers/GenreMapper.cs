@@ -1,9 +1,9 @@
-﻿using Data.Dtos;
+﻿using Logic.Dtos;
 using Logic.Entities;
 
-namespace Data.Mappers
+namespace Logic.Mappers
 {
-    public static class GenreDataMapper
+    public static class GenreMapper
     {
         public static Genre ToEntity(GenreDto dto)
         {

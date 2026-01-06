@@ -1,10 +1,10 @@
-﻿using Data.Dtos;
+﻿using Logic.Dtos;
 using Logic.Entities;
 using Logic.Enums;
 
-namespace Data.Mappers
+namespace Logic.Mappers
 {
-    public static class GameDataMapper
+    public static class GameMapper
     {
         public static Game ToEntity(GameDto dto)
         {

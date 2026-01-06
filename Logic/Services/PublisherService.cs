@@ -1,5 +1,6 @@
 ﻿using Logic.Entities;
 using Logic.Interfaces;
+using Logic.Mappers;
 
 namespace Logic.Services
 {
@@ -14,7 +15,13 @@ namespace Logic.Services
 
         public IEnumerable<Publisher> GetAllPublishers()
         {
-            return _publisherRepository.GetAllPublishers();
+            var publisherDtos = _publisherRepository.GetAllPublishers();
+            var publishers = new List<Publisher>();
+            foreach (var dto in publisherDtos)
+            {
+                publishers.Add(PublisherMapper.ToEntity(dto));
+            }
+            return publishers;
         }
     }
 }

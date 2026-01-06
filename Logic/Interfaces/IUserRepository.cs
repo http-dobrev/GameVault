@@ -1,4 +1,4 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
 
 namespace Logic.Interfaces
 {
@@ -8,9 +8,9 @@ namespace Logic.Interfaces
         bool ExistsByEmail(string email);
         bool ExistsByUsername(string username);
 
-        User? GetByEmail(string email);
-        User? GetByUsername(string username);
+        UserDto? GetByEmail(string email);
+        UserDto? GetByUsername(string username);
 
-        int CreateUser(User user);
+        int CreateUser(UserDto user);
     }
 }

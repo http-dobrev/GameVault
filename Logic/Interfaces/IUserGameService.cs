@@ -6,6 +6,7 @@ namespace Logic.Interfaces
     {
         IEnumerable<UserGame> GetAllUserGames(int userId);
         UserGame? GetUserGame(int userId, int gameId);
+        bool GameExistsInUserLibrary(int userId, int gameId);
         void CreateUserGame(UserGame userGame);
         void UpdateUserGame(UserGame userGame);
         void DeleteUserGame(UserGame userGame);

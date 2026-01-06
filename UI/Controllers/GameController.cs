@@ -3,6 +3,7 @@ using Logic.Enums;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 using UI.Helpers;
 using UI.Mappers;
 using UI.Models;
@@ -15,13 +16,15 @@ namespace UI.Controllers
         private readonly IDeveloperService _developerService;
         private readonly IGenreService _genreService;
         private readonly IPublisherService _publisherService;
+        private readonly IUserGameService _userGameService;
 
-        public GameController(IGameService gameService, IDeveloperService developerService, IGenreService genreService, IPublisherService publisherService)
+        public GameController(IGameService gameService, IDeveloperService developerService, IGenreService genreService, IPublisherService publisherService, IUserGameService userGameService)
         {
             _gameService = gameService;
             _developerService = developerService;
             _genreService = genreService;
             _publisherService = publisherService;
+            _userGameService = userGameService;
         }
 
         // GET: /Game
@@ -42,7 +45,15 @@ namespace UI.Controllers
         {
             try
             {
-                var foundGame = _gameService.GetGame(game);
+                var foundGame = _gameService.GetGame(game.Id);
+                if (foundGame == null)
+                {
+                    return NotFound();
+                }
+
+                var userId = GetUserIdFromClaims();
+                foundGame.IsOwned = _userGameService.GameExistsInUserLibrary(userId, foundGame.Id);
+
                 var vm = GameViewModelMapper.ToGameListViewModel(foundGame);
                 return View(vm);
             }
@@ -100,7 +111,7 @@ namespace UI.Controllers
             if (game.Id <= 0)
                 return BadRequest();
 
-            var foundGame = _gameService.GetGame(game);
+            var foundGame = _gameService.GetGame(game.Id);
             if (foundGame == null)
                 return NotFound();
 
@@ -174,6 +185,11 @@ namespace UI.Controllers
             vm.Publishers = _publisherService.GetAllPublishers()
                 .Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name })
                 .ToList();
+        }
+        public int GetUserIdFromClaims()
+        {
+            int claimId;
+            return claimId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
     }
 }

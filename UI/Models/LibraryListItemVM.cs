@@ -4,15 +4,16 @@ namespace UI.Models
 {
     public class LibraryListItemVM
     {
-        public string Title = string.Empty;
-        public string GenreName = string.Empty;
-        public string Status = string.Empty;
-        public string Platform = string.Empty;
-        public decimal PricePaid;
-        public DateTime OwnedSince;
-        public DateTime AddedAt;
-        public int HoursPlayed;
-        public string Notes = string.Empty;
-        public string CoverImageURL = string.Empty;
+        public int GameId { get; set; }
+        public string CoverImageURL { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string GenreName { get; set; } = string.Empty;
+        public string Platform { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public decimal PricePaid { get; set; }
+        public int HoursPlayed { get; set; }
+        public DateTime OwnedSince { get; set; }
+        public DateTime AddedAt { get; set; }
+        public string Notes { get; set; } = string.Empty;
     }
 }

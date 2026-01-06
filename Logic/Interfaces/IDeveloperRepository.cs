@@ -1,9 +1,9 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
 
 namespace Logic.Interfaces
 {
     public interface IDeveloperRepository
     {
-        IEnumerable<Developer> GetAllDevelopers();
+        IEnumerable<DeveloperDto> GetAllDevelopers();
     }
 }

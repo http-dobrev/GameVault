@@ -28,5 +28,6 @@ namespace Logic.Entities
         public DateTime UpdatedAt { get; set; }
 
         public bool IsArchived { get; set; }
+        public bool IsOwned { get; set; }
     }
 }

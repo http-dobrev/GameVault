@@ -3,6 +3,7 @@ using UI.Mappers;
 using UI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UI.Helpers;
 
 namespace UI.Controllers
 {
@@ -43,7 +44,7 @@ namespace UI.Controllers
             {
                 var userGame = UserGameModelMapper.ToUserGame(vm);
                 _userGameService.CreateUserGame(userGame);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","Game");
             }
             catch (ArgumentException ex)
             {
@@ -54,10 +55,26 @@ namespace UI.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Edit(int gameId)
+        {
+            var userId = GetUserIdFromClaims();
+            var userGame = _userGameService.GetUserGame(userId, gameId);
+            var vm = UserGameModelMapper.ToUserGameEditViewModel(userGame);
+            PopulateDropdowns(vm);
+            return View(vm);
+        }
+
         public int GetUserIdFromClaims()
         {
             int claimId;
             return claimId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+
+        public void PopulateDropdowns(UserGameEditViewModel vm)
+        {
+            vm.StatusOptions = EnumHelper.GetUserGameStatusOptions();
+            vm.PlatformOptions = EnumHelper.GetUserGamePlatformOptions();
         }
     }
 }

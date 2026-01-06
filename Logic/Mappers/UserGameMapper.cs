@@ -1,10 +1,10 @@
 ﻿using Logic.Entities;
 using Logic.Enums;
-using Data.Dtos;
+using Logic.Dtos;
 
-namespace Data.Mappers
+namespace Logic.Mappers
 {
-    public class UserGameDataMapper
+    public class UserGameMapper
     {
         public static UserGame ToEntity(UserGameDto dto)
         {
@@ -18,7 +18,8 @@ namespace Data.Mappers
                 PurchacedAt = dto.PurchacedAt,
                 AddedAt = dto.AddedAt,
                 HoursPlayed = dto.HoursPlayed,
-                Notes = dto.Notes
+                Notes = dto.Notes,
+                Game = GameMapper.ToEntity(dto.Game)
             };
         }
         public static UserGameDto ToDto(UserGame entity)

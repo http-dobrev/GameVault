@@ -19,7 +19,8 @@ namespace UI.Mappers
                 Price = game.Price,
                 PegiAge = (int)game.PegiAge,
                 Description = game.Description,
-                CoverImageURL = game.CoverImageUrl
+                CoverImageURL = game.CoverImageUrl,
+                IsOwned = game.IsOwned
             };
         }
 

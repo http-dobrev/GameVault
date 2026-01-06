@@ -1,5 +1,5 @@
 ﻿
-namespace Data.Dtos
+namespace Logic.Dtos
 {
     public class GameDto
     {

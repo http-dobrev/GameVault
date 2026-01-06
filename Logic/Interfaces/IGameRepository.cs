@@ -1,14 +1,14 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
 
 namespace Logic.Interfaces
 {
     public interface IGameRepository
     {
-        IEnumerable<Game> GetAllGames();
-        Game? GetGame(Game game);
+        IEnumerable<GameDto> GetAllGames();
+        GameDto? GetGame(int id);
         bool GameExists(string title);
-        void CreateGame(Game game);
-        void UpdateGame(Game game);
-        void ArchiveGame(Game game);
+        void CreateGame(GameDto game);
+        void UpdateGame(GameDto game);
+        void ArchiveGame(int id);
     }
 }

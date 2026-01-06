@@ -2,10 +2,10 @@
 using Logic.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
-using Data.Dtos;
-using Data.Mappers;
+using Logic.Dtos;
+using Logic.Mappers;
 
-namespace Data.Repos
+namespace Logic.Repos
 {
     public class UserGameRepository : IUserGameRepository
     {
@@ -20,7 +20,19 @@ namespace Data.Repos
         public IEnumerable<UserGame> GetAllUserGames(int userId)
         {
             var userGames = new List<UserGame>();
-            const string sql = "SELECT * FROM UserGame WHERE UserId = @UserId";
+            const string sql = @"SELECT
+                                    ug.*, 
+                                    g.Title,
+                                    g.CoverImageUrl,
+                                    gen.Name AS GenreName, 
+                                    dev.Name AS DeveloperName, 
+                                    pub.Name AS PublisherName
+                                FROM UserGame ug
+                                INNER JOIN Game g ON ug.GameId = g.Id
+                                INNER JOIN Genre gen ON g.GenreId = gen.Id
+                                INNER JOIN Developer dev ON g.DeveloperId = dev.Id
+                                INNER JOIN Publisher pub ON g.PublisherId = pub.Id
+                                WHERE ug.UserId = @UserId";
 
             using var conn = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand(sql, conn);
@@ -35,15 +47,24 @@ namespace Data.Repos
                 {
                     UserId = (int)reader["UserId"],
                     GameId = (int)reader["GameId"],
-                    Status = Convert.ToInt32(reader["Status"]),
-                    Platform = Convert.ToInt32(reader["Platform"]),
+                    Status = (byte)reader["Status"],
+                    Platform = (byte)reader["Platform"],
                     PricePaid = (decimal)reader["PricePaid"],
                     PurchacedAt = (DateTime)reader["PurchacedAt"],
                     AddedAt = (DateTime)reader["AddedAt"],
                     HoursPlayed = (int)reader["HoursPlayed"],
-                    Notes = (string)reader["Notes"]
+                    Notes = (string)reader["Notes"],
+                    Game = new GameDto
+                    {
+                        Id = (int)reader["GameId"],
+                        Title = (string)reader["Title"],
+                        GenreName = (string)reader["GenreName"],
+                        DeveloperName = (string)reader["DeveloperName"],
+                        PublisherName = (string)reader["PublisherName"],
+                        CoverImageUrl = (string)reader["CoverImageUrl"]
+                    }
                 };
-                userGames.Add(UserGameDataMapper.ToEntity(dto));
+                userGames.Add(UserGameMapper.ToEntity(dto));
             }
             reader.Close();
             conn.Close();
@@ -59,7 +80,7 @@ namespace Data.Repos
                                     dev.Name AS DeveloperName, 
                                     pub.Name AS PublisherName
                                 FROM UserGame ug
-                                INNER JOIN Games g ON ug.GameId = g.Id
+                                INNER JOIN Game g ON ug.GameId = g.Id
                                 INNER JOIN Genre gen ON g.GenreId = gen.Id
                                 INNER JOIN Developer dev ON g.DeveloperId = dev.Id
                                 INNER JOIN Publisher pub ON g.PublisherId = pub.Id
@@ -81,8 +102,8 @@ namespace Data.Repos
                 {
                     UserId = (int)reader["UserId"],
                     GameId = (int)reader["GameId"],
-                    Status = (int)reader["Status"],
-                    Platform = (int)reader["Platform"],
+                    Status = (byte)reader["Status"],
+                    Platform = (byte)reader["Platform"],
                     PricePaid = (decimal)reader["PricePaid"],
                     PurchacedAt = (DateTime)reader["PurchacedAt"],
                     AddedAt = (DateTime)reader["AddedAt"],
@@ -92,13 +113,14 @@ namespace Data.Repos
                     {
                         Id = (int)reader["GameId"],
                         Title = (string)reader["Title"],
-                        GenreName = (string)reader["Genre"],
-                        DeveloperName = (string)reader["Developer"]
+                        GenreName = (string)reader["GenreName"],
+                        DeveloperName = (string)reader["DeveloperName"],
+                        PublisherName = (string)reader["PublisherName"]
                     }
                 };
                 reader.Close();
                 conn.Close();
-                return UserGameDataMapper.ToEntity(dto);
+                return UserGameMapper.ToEntity(dto);
             }
             reader.Close();
             conn.Close();
@@ -119,7 +141,7 @@ namespace Data.Repos
             var count = (int)cmd.ExecuteScalar();
             conn.Close();
 
-            // if count > 0, the game exists. if count is 0 , it does not exist.
+            // if count 1, the game exists. if count is 0 , it does not exist.
             return count > 0;
         }
         public void CreateUserGame(UserGame userGame)
@@ -144,7 +166,7 @@ namespace Data.Repos
 
         public void UpdateUserGame(UserGame userGame)
         {
-            var UserGameDto = UserGameDataMapper.ToDto(userGame);
+            var UserGameDto = UserGameMapper.ToDto(userGame);
 
             const string sql = @"UPDATE UserGame 
                                  SET Status = @Status, 

@@ -1,9 +1,9 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
 
 namespace Logic.Interfaces
 {
     public interface IPublisherRepository
     {
-        IEnumerable<Publisher> GetAllPublishers();
+        IEnumerable<PublisherDto> GetAllPublishers();
     }
 }

@@ -1,11 +1,11 @@
-﻿using Data.Dtos;
-using Data.Mappers;
+﻿using Logic.Dtos;
+using Logic.Mappers;
 using Logic.Entities;
 using Logic.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Data.Repos
+namespace Logic.Repos
 {
     public class PublisherRepository : IPublisherRepository
     {
@@ -17,9 +17,9 @@ namespace Data.Repos
                 ?? throw new InvalidOperationException("Connection string not found");
         }
 
-        public IEnumerable<Publisher> GetAllPublishers()
+        public IEnumerable<PublisherDto> GetAllPublishers()
         {
-            var publishers = new List<Publisher>();
+            var publishers = new List<PublisherDto>();
 
             const string sql = "SELECT * FROM Publisher";
 
@@ -36,7 +36,7 @@ namespace Data.Repos
                     Id = (int)reader["Id"],
                     Name = (string)reader["Name"],
                 };
-                publishers.Add(PublisherDataMapper.ToEntity(dto));
+                publishers.Add(dto);
             }
 
             reader.Close();

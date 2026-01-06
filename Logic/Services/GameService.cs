@@ -1,32 +1,46 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
+using Logic.Entities;
 using Logic.Enums;
 using Logic.Interfaces;
+using Logic.Mappers;
 
 namespace Logic.Services
 {
     public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
+        private readonly IUserGameRepository _userGameRepository;
 
-        public GameService(IGameRepository gameRepository)
+        public GameService(IGameRepository gameRepository, IUserGameRepository userGameRepository)
         {
             _gameRepository = gameRepository;
+            _userGameRepository = userGameRepository;
         }
 
         public IEnumerable<Game> GetAllGames()
         {
-            return _gameRepository.GetAllGames();
+            var dtos = _gameRepository.GetAllGames();
+            var games = new List<Game>();
+
+            foreach (var dto in dtos)
+            {
+                Game game = GameMapper.ToEntity(dto);
+                games.Add(game);
+            }
+
+            return games;
         }
 
-        public Game? GetGame(Game game)
+        public Game? GetGame(int id)
         {
-            if (game.Id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(game.Id), "Id must be greater than 0.");
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than 0.");
 
-            var foundGame = _gameRepository.GetGame(game);
+            var dto = _gameRepository.GetGame(id);
+            if (dto == null)
+                throw new KeyNotFoundException($"Game with id {id} was not found.");
 
-            if (foundGame == null)
-                throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
+            var foundGame = GameMapper.ToEntity(dto);
 
             return foundGame;
         }
@@ -48,7 +62,9 @@ namespace Logic.Services
             game.CreatedAt = DateTime.UtcNow;
             game.UpdatedAt = DateTime.UtcNow;
 
-            _gameRepository.CreateGame(game);
+            GameDto dto = GameMapper.ToDto(game);
+
+            _gameRepository.CreateGame(dto);
         }
 
         public void UpdateGame(Game game)
@@ -66,11 +82,11 @@ namespace Logic.Services
                 throw new ArgumentException(message, nameof(game));
             }
 
-            var existing = _gameRepository.GetGame(game);
-            if (existing == null)
+            var dto = _gameRepository.GetGame(game.Id);
+            if (dto == null)
                 throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
 
-            _gameRepository.UpdateGame(game);
+            _gameRepository.UpdateGame(dto);
         }
 
         public void ArchiveGame(Game game)
@@ -78,11 +94,12 @@ namespace Logic.Services
             if (game.Id <= 0)
                 throw new ArgumentOutOfRangeException(nameof(game.Id), "Id must be greater than 0.");
 
-            var existing = _gameRepository.GetGame(game);
+            var existing = _gameRepository.GetGame(game.Id);
             if (existing == null)
                 throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
 
-            _gameRepository.ArchiveGame(game);
+
+            _gameRepository.ArchiveGame(existing.Id);
         }
 
         /// <summary>

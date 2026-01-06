@@ -1,5 +1,5 @@
-﻿using Data.Dtos;
-using Data.Mappers;
+﻿using Logic.Dtos;
+using Logic.Mappers;
 using Logic.Entities;
 using Logic.Interfaces;
 using Microsoft.Data.SqlClient;
@@ -18,9 +18,9 @@ namespace Data.Repos
                 ?? throw new InvalidOperationException("Connection string not found");
         }
 
-        public IEnumerable<Game> GetAllGames()
+        public IEnumerable<GameDto> GetAllGames()
         {
-            var games = new List<Game>();
+            var games = new List<GameDto>();
             const string sql = @"SELECT
                                     g.Id,
                                     g.Title,
@@ -66,17 +66,15 @@ namespace Data.Repos
                     UpdatedAt = (DateTime)reader["UpdatedAt"],
                     IsArchived = (bool)reader["IsArchived"]
                 };
-                games.Add(GameDataMapper.ToEntity(dto));
+                games.Add(dto);
             }
             reader.Close();
             conn.Close();
             return games;
         }
 
-        public void CreateGame(Game game)
+        public void CreateGame(GameDto dto)
         {
-            GameDto dto = GameDataMapper.ToDto(game);
-
             const string sql = @"
                 INSERT INTO Game (Title, GenreId, ReleaseDate, DeveloperId, PublisherId, Price, PegiAge, Description, CoverImageUrl, CreatedAt, UpdatedAt, IsArchived)
                 VALUES (@Title, @GenreId, @ReleaseDate, @DeveloperId, @PublisherId, @Price, @PegiAge, @Description, @CoverImageUrl, @CreatedAt, @UpdatedAt, @IsArchived)";
@@ -102,7 +100,7 @@ namespace Data.Repos
             conn.Close();
         }
 
-        public Game? GetGame(Game game)
+        public GameDto? GetGame(int id)
         {
             const string sql = @"SELECT
                                     g.Id,
@@ -130,7 +128,7 @@ namespace Data.Repos
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@Id", game.Id);
+            cmd.Parameters.AddWithValue("@Id", id);
 
             conn.Open();
             var reader = cmd.ExecuteReader();
@@ -160,7 +158,7 @@ namespace Data.Repos
             reader.Close();
             conn.Close();
 
-            return GameDataMapper.ToEntity(dto);
+            return dto;
         }
 
         public bool GameExists(string title)
@@ -180,9 +178,8 @@ namespace Data.Repos
             return count > 0;
         }
 
-        public void UpdateGame(Game game)
+        public void UpdateGame(GameDto dto)
         {
-            GameDto dto = GameDataMapper.ToDto(game);
 
             const string sql = @"UPDATE Game
                                  SET Title = @Title,GenreId = @GenreId,ReleaseDate = @ReleaseDate,DeveloperId = @DeveloperId,PublisherId = @PublisherId,Price = @Price,PegiAge = @PegiAge,Description = @Description,CoverImageUrl = @CoverImageUrl,UpdatedAt = @UpdatedAt,IsArchived = @IsArchived
@@ -209,14 +206,14 @@ namespace Data.Repos
             conn.Close();
         }
 
-        public void ArchiveGame(Game game)
+        public void ArchiveGame(int id)
         {
             const string sql = @"UPDATE Game SET IsArchived = 1 WHERE Id = @Id";
 
             var conn = new SqlConnection(_connectionString);
             var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@Id", game.Id);
+            cmd.Parameters.AddWithValue("@Id", id);
 
             conn.Open();
             cmd.ExecuteNonQuery();

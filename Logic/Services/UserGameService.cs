@@ -30,6 +30,15 @@ namespace Logic.Services
             return foundUserGame;
         }
 
+        public bool GameExistsInUserLibrary(int userId, int gameId)
+        {
+            if (userId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(userId), "UserId must be greater than 0.");
+            if (gameId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(gameId), "GameId must be greater than 0.");
+            return _userGameRepository.UserGameExists(userId, gameId);
+        }
+
         public void CreateUserGame(UserGame userGame)
         {
             if (userGame == null)

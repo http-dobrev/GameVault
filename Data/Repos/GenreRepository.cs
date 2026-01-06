@@ -1,5 +1,5 @@
-﻿using Data.Dtos;
-using Data.Mappers;
+﻿using Logic.Dtos;
+using Logic.Mappers;
 using Logic.Entities;
 using Logic.Interfaces;
 using Microsoft.Data.SqlClient;
@@ -17,9 +17,9 @@ namespace Data.Repos
                 ?? throw new InvalidOperationException("Connection string not found");
         }
 
-        public IEnumerable<Genre> GetAllGenres()
+        public IEnumerable<GenreDto> GetAllGenres()
         {
-            var genres = new List<Genre>();
+            var genres = new List<GenreDto>();
 
             const string sql = "SELECT * FROM Genre";
 
@@ -36,7 +36,7 @@ namespace Data.Repos
                     Id = (int)reader["Id"],
                     Name = (string)reader["Name"],
                 };
-                genres.Add(GenreDataMapper.ToEntity(dto));
+                genres.Add(dto);
             }
 
             reader.Close();

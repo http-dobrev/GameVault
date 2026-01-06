@@ -1,9 +1,9 @@
-﻿using Logic.Entities;
+﻿using Logic.Dtos;
 
 namespace Logic.Interfaces
 {
     public interface IGenreRepository
     {
-        IEnumerable<Genre> GetAllGenres();
+        IEnumerable<GenreDto> GetAllGenres();
     }
 }

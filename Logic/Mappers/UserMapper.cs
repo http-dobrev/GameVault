@@ -1,10 +1,10 @@
-﻿using Data.Dtos;
+﻿using Logic.Dtos;
 using Logic.Entities;
 using Logic.Enums;
 
-namespace Data.Mappers
+namespace Logic.Mappers
 {
-    public static class UserDataMapper
+    public static class UserMapper
     {
         public static User UserDtoToEntity(UserDto dto)
         {
@@ -23,7 +23,6 @@ namespace Data.Mappers
         {
             return new UserDto
             {
-                Id = entity.Id,
                 Username = entity.Username,
                 Email = entity.Email,
                 PasswordHash = entity.PasswordHash,
