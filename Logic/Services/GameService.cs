@@ -106,7 +106,7 @@ namespace Logic.Services
         /// Validates business rules for a Game entity.
         /// Returns a list of error messages. If empty, the Game is valid.
         /// </summary>
-        public List<string> ValidateGame(Game game)
+        public static List<string> ValidateGame(Game game)
         {
             var errors = new List<string>();
 

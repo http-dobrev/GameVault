@@ -4,6 +4,7 @@ namespace UI.Models
 {
     public class UserGameEditViewModel
     {
+        public string Title { get; set; } = string.Empty;
         public int UserId { get; set; }
         public int GameId { get; set; }
         public int? Status { get; set; }

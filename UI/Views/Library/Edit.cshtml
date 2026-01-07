@@ -1,11 +1,11 @@
 ﻿@model UI.Models.UserGameEditViewModel
 
 @{
-    ViewData["Title"] = "Edit Game Details";
+    ViewData["Title"] = "Edit Game Details - " + Model.Title;
 }
 
 <div class="container py-4">
-    <h1 class="mb-4">Edit Game Details</h1>
+    <h1 class="mb-4">Edit Game Details - @Model.Title</h1>
 
     <form asp-action="Edit" method="post">
         @* Hidden keys *@
@@ -20,8 +20,8 @@
                 <select asp-for="Status"
                         asp-items="Model.StatusOptions"
                         class="form-select">
-                    <option value="">-- Select status --</option>
                 </select>
+                <option value="@Model.StatusOptions"></option>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
 
@@ -31,8 +31,8 @@
                 <select asp-for="Platform"
                         asp-items="Model.PlatformOptions"
                         class="form-select">
-                    <option value="">-- Select platform --</option>
                 </select>
+                <option value="@Model.PlatformOptions"></option>
                 <span asp-validation-for="Platform" class="text-danger"></span>
             </div>
 

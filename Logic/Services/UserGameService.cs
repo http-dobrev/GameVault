@@ -1,6 +1,7 @@
 ﻿using Logic.Entities;
 using Logic.Enums;
 using Logic.Interfaces;
+using Logic.Mappers;
 
 namespace Logic.Services
 {
@@ -15,7 +16,9 @@ namespace Logic.Services
 
         public IEnumerable<UserGame> GetAllUserGames(int userId)
         {
-            return _userGameRepository.GetAllUserGames(userId);
+            var userGamesDto = _userGameRepository.GetAllUserGames(userId);
+            var userGames = userGamesDto.Select(ug => UserGameMapper.ToEntity(ug));
+            return userGames;
         }
 
         public UserGame? GetUserGame(int userId, int gameId)
@@ -27,7 +30,7 @@ namespace Logic.Services
             var foundUserGame = _userGameRepository.GetUserGame(userId, gameId);
             if (foundUserGame == null)
                 throw new KeyNotFoundException($"UserGame with UserId {userId} and GameId {gameId} was not found.");
-            return foundUserGame;
+            return UserGameMapper.ToEntity(foundUserGame);
         }
 
         public bool GameExistsInUserLibrary(int userId, int gameId)
@@ -50,7 +53,8 @@ namespace Logic.Services
             var errors = ValidateUserGame(userGame);
             if (errors.Any())
                 throw new ArgumentException("UserGame validation failed: " + string.Join("; ", errors));
-            _userGameRepository.CreateUserGame(userGame);
+
+            _userGameRepository.CreateUserGame(UserGameMapper.ToDto(userGame));
         }
 
         public void UpdateUserGame(UserGame userGame)
@@ -71,7 +75,7 @@ namespace Logic.Services
             if (existingUserGame == null)
                 throw new KeyNotFoundException($"UserGame with UserId {userGame.UserId} and GameId {userGame.GameId} was not found.");
 
-            _userGameRepository.UpdateUserGame(userGame);
+            _userGameRepository.UpdateUserGame(UserGameMapper.ToDto(userGame));
         }
 
         public void DeleteUserGame(UserGame userGame)
@@ -81,10 +85,10 @@ namespace Logic.Services
 
             if (!_userGameRepository.UserGameExists(userGame.UserId, userGame.GameId))
                 throw new KeyNotFoundException($"UserGame with UserId {userGame.UserId} and GameId {userGame.GameId} does not exist.");
-            _userGameRepository.DeleteUserGame(userGame);
+            _userGameRepository.DeleteUserGame(UserGameMapper.ToDto(userGame));
         }
 
-        public List<string> ValidateUserGame(UserGame userGame)
+        public static List<string> ValidateUserGame(UserGame userGame)
         {
             var errors = new List<string>();
             if (userGame.UserId <= 0)
@@ -98,12 +102,10 @@ namespace Logic.Services
             if (userGame.PricePaid < 0)
                 errors.Add("PricePaid cannot be negative.");
             var minReleaseDate = new DateTime(1970, 1, 1);
-            if (userGame.PurchacedAt < minReleaseDate)
+            if (userGame.PurchacedAt <= minReleaseDate)
                 errors.Add($"PurchacedAt cannot be earlier than {minReleaseDate.ToShortDateString()}.");
-            if (userGame.PurchacedAt > DateTime.Now)
+            if (userGame.PurchacedAt >= DateTime.Now)
                 errors.Add("PurchacedAt cannot be in the future.");
-            if (userGame.AddedAt < minReleaseDate)
-                errors.Add($"AddedAt cannot be earlier than {minReleaseDate.ToShortDateString()}.");
             if (userGame.HoursPlayed < 0)
                 errors.Add("HoursPlayed cannot be negative.");
             if (userGame.Notes != null && userGame.Notes.Length > 512)

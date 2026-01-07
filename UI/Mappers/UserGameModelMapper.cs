@@ -27,6 +27,7 @@ namespace UI.Mappers
         {
             return new UserGameEditViewModel
             {
+                Title = userGame.Game.Title,
                 UserId = userGame.UserId,
                 GameId = userGame.GameId,
                 Status = (int?)userGame.Status,
@@ -38,13 +39,28 @@ namespace UI.Mappers
                 Notes = userGame.Notes
             };
         }
-        public static UserGame ToUserGame(UserGameFormViewModel libraryCreateVM)
+        public static UserGame ToUserGameFromFormViewModel(UserGameFormViewModel libraryCreateVM)
         {
             return new UserGame
             {
                 UserId = libraryCreateVM.UserId,
                 GameId = libraryCreateVM.GameId,
                 AddedAt = DateTime.Now
+            };
+        }
+
+        public static UserGame ToUserGameFromEditViewModel(UserGameEditViewModel vm)
+        {
+            return new UserGame
+            {
+                UserId = vm.UserId,
+                GameId = vm.GameId,
+                Status = (UserGameStatus)(vm.Status ?? 0),
+                Platform = (UserGamePlatform)(vm.Platform ?? 0),
+                PricePaid = vm.PricePaid ?? 0m,
+                PurchacedAt = vm.PurchacedAt ?? default, // Fixes CS0266 and CS8629
+                HoursPlayed = vm.HoursPlayed ?? 0,
+                Notes = vm.Notes ?? string.Empty
             };
         }
     }

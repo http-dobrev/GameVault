@@ -4,6 +4,7 @@ using UI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UI.Helpers;
+using System.Diagnostics;
 
 namespace UI.Controllers
 {
@@ -42,7 +43,7 @@ namespace UI.Controllers
 
             try
             {
-                var userGame = UserGameModelMapper.ToUserGame(vm);
+                var userGame = UserGameModelMapper.ToUserGameFromFormViewModel(vm);
                 _userGameService.CreateUserGame(userGame);
                 return RedirectToAction("Index","Game");
             }
@@ -63,6 +64,25 @@ namespace UI.Controllers
             var vm = UserGameModelMapper.ToUserGameEditViewModel(userGame);
             PopulateDropdowns(vm);
             return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(UserGameEditViewModel vm)
+        {
+            try
+            {
+                var userGame = UserGameModelMapper.ToUserGameFromEditViewModel(vm);
+                _userGameService.UpdateUserGame(userGame);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ArgumentException ex)
+            {
+                Debug.WriteLine($"Logic Error: {ex.Message}");
+                PopulateDropdowns(vm);
+                // You can also pass the message to the user
+                return Content(ex.Message);
+            }
         }
 
         public int GetUserIdFromClaims()

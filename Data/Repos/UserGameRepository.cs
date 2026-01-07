@@ -17,9 +17,9 @@ namespace Logic.Repos
                 ?? throw new InvalidOperationException("Connection string not found");
         }
 
-        public IEnumerable<UserGame> GetAllUserGames(int userId)
+        public IEnumerable<UserGameDto> GetAllUserGames(int userId)
         {
-            var userGames = new List<UserGame>();
+            var userGames = new List<UserGameDto>();
             const string sql = @"SELECT
                                     ug.*, 
                                     g.Title,
@@ -64,14 +64,14 @@ namespace Logic.Repos
                         CoverImageUrl = (string)reader["CoverImageUrl"]
                     }
                 };
-                userGames.Add(UserGameMapper.ToEntity(dto));
+                userGames.Add(dto);
             }
             reader.Close();
             conn.Close();
             return userGames;
         }
 
-        public UserGame? GetUserGame(int userId, int gameId)
+        public UserGameDto? GetUserGame(int userId, int gameId)
         {
             const string sql =@"SELECT 
                                     ug.*, 
@@ -120,7 +120,7 @@ namespace Logic.Repos
                 };
                 reader.Close();
                 conn.Close();
-                return UserGameMapper.ToEntity(dto);
+                return dto;
             }
             reader.Close();
             conn.Close();
@@ -144,36 +144,33 @@ namespace Logic.Repos
             // if count 1, the game exists. if count is 0 , it does not exist.
             return count > 0;
         }
-        public void CreateUserGame(UserGame userGame)
+        public void CreateUserGame(UserGameDto dto)
         {
             const string sql = @"INSERT INTO UserGame (UserId, GameId, Status, Platform, PricePaid, PurchacedAt, AddedAt, HoursPlayed, Notes)
                                  VALUES (@UserId, @GameId, @Status, @Platform, @PricePaid, @PurchacedAt, @AddedAt, @HoursPlayed, @Notes)";
             using var conn = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@UserId", userGame.UserId);
-            cmd.Parameters.AddWithValue("@GameId", userGame.GameId);
-            cmd.Parameters.AddWithValue("@Status", (int)userGame.Status);
-            cmd.Parameters.AddWithValue("@Platform", (int)userGame.Platform);
-            cmd.Parameters.AddWithValue("@PricePaid", userGame.PricePaid);
-            cmd.Parameters.AddWithValue("@PurchacedAt", userGame.PurchacedAt);
+            cmd.Parameters.AddWithValue("@UserId", dto.UserId);
+            cmd.Parameters.AddWithValue("@GameId", dto.GameId);
+            cmd.Parameters.AddWithValue("@Status", (int)dto.Status);
+            cmd.Parameters.AddWithValue("@Platform", (int)dto.Platform);
+            cmd.Parameters.AddWithValue("@PricePaid", dto.PricePaid);
+            cmd.Parameters.AddWithValue("@PurchacedAt", dto.PurchacedAt);
             cmd.Parameters.AddWithValue("@AddedAt", DateTime.UtcNow);
-            cmd.Parameters.AddWithValue("@HoursPlayed", userGame.HoursPlayed);
-            cmd.Parameters.AddWithValue("@Notes", userGame.Notes ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@HoursPlayed", dto.HoursPlayed);
+            cmd.Parameters.AddWithValue("@Notes", dto.Notes ?? (object)DBNull.Value);
             conn.Open();
             cmd.ExecuteNonQuery();
             conn.Close();
         }
 
-        public void UpdateUserGame(UserGame userGame)
+        public void UpdateUserGame(UserGameDto dto)
         {
-            var UserGameDto = UserGameMapper.ToDto(userGame);
-
             const string sql = @"UPDATE UserGame 
                                  SET Status = @Status, 
                                      Platform = @Platform, 
                                      PricePaid = @PricePaid, 
                                      PurchacedAt = @PurchacedAt, 
-                                     AddedAt = @AddedAt, 
                                      HoursPlayed = @HoursPlayed, 
                                      Notes = @Notes
                                  WHERE UserId = @UserId AND GameId = @GameId";
@@ -181,15 +178,14 @@ namespace Logic.Repos
             using var conn = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.AddWithValue("@UserId", UserGameDto.UserId);
-            cmd.Parameters.AddWithValue("@GameId", UserGameDto.GameId);
-            cmd.Parameters.AddWithValue("@Status", UserGameDto.Status);
-            cmd.Parameters.AddWithValue("@Platform", UserGameDto.Platform);
-            cmd.Parameters.AddWithValue("@PricePaid", UserGameDto.PricePaid);
-            cmd.Parameters.AddWithValue("@PurchacedAt", UserGameDto.PurchacedAt);
-            cmd.Parameters.AddWithValue("@AddedAt", UserGameDto.AddedAt);
-            cmd.Parameters.AddWithValue("@HoursPlayed", UserGameDto.HoursPlayed);
-            cmd.Parameters.AddWithValue("@Notes", (object?)UserGameDto.Notes ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@UserId", dto.UserId);
+            cmd.Parameters.AddWithValue("@GameId", dto.GameId);
+            cmd.Parameters.AddWithValue("@Status", dto.Status);
+            cmd.Parameters.AddWithValue("@Platform", dto.Platform);
+            cmd.Parameters.AddWithValue("@PricePaid", dto.PricePaid);
+            cmd.Parameters.AddWithValue("@PurchacedAt", dto.PurchacedAt);
+            cmd.Parameters.AddWithValue("@HoursPlayed", dto.HoursPlayed);
+            cmd.Parameters.AddWithValue("@Notes", (object?)dto.Notes ?? DBNull.Value);
 
 
             conn.Open();
@@ -197,13 +193,13 @@ namespace Logic.Repos
             conn.Close();
         }
 
-        public void DeleteUserGame(UserGame userGame)
+        public void DeleteUserGame(UserGameDto dto)
         {
             const string sql = "DELETE FROM UserGame WHERE UserId = @UserId AND GameId = @GameId";
             using var conn = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@UserId", userGame.UserId);
-            cmd.Parameters.AddWithValue("@GameId", userGame.GameId);
+            cmd.Parameters.AddWithValue("@UserId", dto.UserId);
+            cmd.Parameters.AddWithValue("@GameId", dto.GameId);
             conn.Open();
             cmd.ExecuteNonQuery();
             conn.Close();
