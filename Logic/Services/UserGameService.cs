@@ -109,7 +109,7 @@ namespace Logic.Services
             if (userGame.HoursPlayed < 0)
                 errors.Add("HoursPlayed cannot be negative.");
             if (userGame.Notes != null && userGame.Notes.Length > 512)
-                errors.Add("Notes cannot exceed 1000 characters.");
+                errors.Add("Notes cannot exceed 512 characters.");
 
             return errors;
         }
