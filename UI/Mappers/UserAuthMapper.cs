@@ -20,7 +20,8 @@ namespace UI.Mappers
             return new LoginRequest
             {
                 EmailOrUsername = viewModel.EmailOrUsername,
-                Password = viewModel.Password
+                Password = viewModel.Password,
+
             };
         }
     }

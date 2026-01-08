@@ -103,11 +103,15 @@
                                 </a>
 
                                 @* Optional Remove (recommended to go to confirmation page) *@
-                                <a class="btn btn-sm btn-outline-danger"
-                                   asp-action="Remove"
-                                   asp-route-gameId="@game.GameId">
-                                    Remove
-                                </a>
+                                <form asp-controller="Library"
+                                      asp-action="Delete"
+                                      asp-route-gameId="@game.GameId"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Remove this game from your library?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

@@ -127,7 +127,7 @@ namespace UI.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, GameFormViewModel viewModel)
-        {
+         {
             if (id != viewModel.Id)
                 return BadRequest();
 

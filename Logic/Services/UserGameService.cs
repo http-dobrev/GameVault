@@ -78,14 +78,15 @@ namespace Logic.Services
             _userGameRepository.UpdateUserGame(UserGameMapper.ToDto(userGame));
         }
 
-        public void DeleteUserGame(UserGame userGame)
+        public void DeleteUserGame(int userId, int gameId)
         {
-            if (userGame == null)
-                throw new ArgumentNullException(nameof(userGame), "UserGame cannot be null.");
-
-            if (!_userGameRepository.UserGameExists(userGame.UserId, userGame.GameId))
-                throw new KeyNotFoundException($"UserGame with UserId {userGame.UserId} and GameId {userGame.GameId} does not exist.");
-            _userGameRepository.DeleteUserGame(UserGameMapper.ToDto(userGame));
+            if (userId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(userId), "UserId must be greater than 0.");
+            if (gameId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(gameId), "GameId must be greater than 0.");
+            if (!_userGameRepository.UserGameExists(userId, gameId))
+                throw new KeyNotFoundException($"UserGame with UserId {userId} and GameId {gameId} does not exist.");
+            _userGameRepository.DeleteUserGame(userId, gameId);
         }
 
         public static List<string> ValidateUserGame(UserGame userGame)

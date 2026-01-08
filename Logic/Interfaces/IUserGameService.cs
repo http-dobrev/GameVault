@@ -9,6 +9,6 @@ namespace Logic.Interfaces
         bool GameExistsInUserLibrary(int userId, int gameId);
         void CreateUserGame(UserGame userGame);
         void UpdateUserGame(UserGame userGame);
-        void DeleteUserGame(UserGame userGame);
+        void DeleteUserGame(int userId, int gameId);
     }
 }

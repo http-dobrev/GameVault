@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="m-0">@Model.Title</h1>
 
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-1">
             @if (!Model.IsOwned)
             {
                 <form asp-controller="Library" asp-action="Create" method="post">
@@ -21,8 +21,23 @@
             } else {
                 <a asp-controller="Library" asp-action="Index" class="btn btn-success">View in My Library</a>
             }
-            <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+
+            @* @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary w-100">
+                    Edit
+                </a>
+
+                <form method="post"
+                        asp-controller="Game"
+                        asp-action="Delete"
+                        asp-route-id="@Model.Id"
+                        onsubmit="return confirm('Are you sure you want to delete this game? This cannot be undone.');"
+                        class="w-100">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
+                </form>
+            } *@
         </div>
     </div>
 
@@ -30,9 +45,9 @@
         <!-- Cover -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm">
-                @if (!string.IsNullOrWhiteSpace(Model.CoverImageURL))
+                @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
                 {
-                    <img src="@Model.CoverImageURL"
+                    <img src="@Model.CoverImageUrl"
                          class="card-img-top"
                          alt="@Model.Title cover"
                          style="object-fit: cover; max-height: 420px;" />

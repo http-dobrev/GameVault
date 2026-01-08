@@ -40,9 +40,7 @@ namespace Logic.Services
             if (dto == null)
                 throw new KeyNotFoundException($"Game with id {id} was not found.");
 
-            var foundGame = GameMapper.ToEntity(dto);
-
-            return foundGame;
+            return GameMapper.ToEntity(dto);
         }
 
         public void CreateGame(Game game)
@@ -62,9 +60,7 @@ namespace Logic.Services
             game.CreatedAt = DateTime.UtcNow;
             game.UpdatedAt = DateTime.UtcNow;
 
-            GameDto dto = GameMapper.ToDto(game);
-
-            _gameRepository.CreateGame(dto);
+            _gameRepository.CreateGame(GameMapper.ToDto(game));
         }
 
         public void UpdateGame(Game game)
@@ -86,7 +82,7 @@ namespace Logic.Services
             if (dto == null)
                 throw new KeyNotFoundException($"Game with id {game.Id} was not found.");
 
-            _gameRepository.UpdateGame(dto);
+            _gameRepository.UpdateGame(GameMapper.ToDto(game));
         }
 
         public void ArchiveGame(Game game)

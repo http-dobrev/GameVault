@@ -193,13 +193,13 @@ namespace Logic.Repos
             conn.Close();
         }
 
-        public void DeleteUserGame(UserGameDto dto)
+        public void DeleteUserGame(int userId, int gameId)
         {
             const string sql = "DELETE FROM UserGame WHERE UserId = @UserId AND GameId = @GameId";
             using var conn = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@UserId", dto.UserId);
-            cmd.Parameters.AddWithValue("@GameId", dto.GameId);
+            cmd.Parameters.AddWithValue("@UserId", userId);
+            cmd.Parameters.AddWithValue("@GameId", gameId);
             conn.Open();
             cmd.ExecuteNonQuery();
             conn.Close();

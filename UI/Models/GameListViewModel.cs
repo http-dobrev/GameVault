@@ -14,7 +14,7 @@
         public decimal Price { get; set; }
         public int PegiAge { get; set; }
         public string Description {  get; set; } = string.Empty;
-        public string CoverImageURL {  get; set; } = string.Empty;
+        public string CoverImageUrl {  get; set; } = string.Empty;
         public bool IsOwned { get; set; }
     }
 }

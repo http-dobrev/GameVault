@@ -85,6 +85,15 @@ namespace UI.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int gameId)
+        {
+            var userId = GetUserIdFromClaims();
+            _userGameService.DeleteUserGame(userId, gameId);
+            return RedirectToAction(nameof(Index));
+        }
+
         public int GetUserIdFromClaims()
         {
             int claimId;
