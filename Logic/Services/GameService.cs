@@ -1,5 +1,4 @@
-﻿using Logic.Dtos;
-using Logic.Entities;
+﻿using Logic.Entities;
 using Logic.Enums;
 using Logic.Interfaces;
 using Logic.Mappers;
@@ -9,12 +8,10 @@ namespace Logic.Services
     public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
-        private readonly IUserGameRepository _userGameRepository;
 
-        public GameService(IGameRepository gameRepository, IUserGameRepository userGameRepository)
+        public GameService(IGameRepository gameRepository)
         {
             _gameRepository = gameRepository;
-            _userGameRepository = userGameRepository;
         }
 
         public IEnumerable<Game> GetAllGames()

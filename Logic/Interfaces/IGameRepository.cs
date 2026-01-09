@@ -7,8 +7,8 @@ namespace Logic.Interfaces
         IEnumerable<GameDto> GetAllGames();
         GameDto? GetGame(int id);
         bool GameExists(string title);
-        void CreateGame(GameDto game);
-        void UpdateGame(GameDto game);
+        void CreateGame(GameDto dto);
+        void UpdateGame(GameDto dto);
         void ArchiveGame(int id);
     }
 }

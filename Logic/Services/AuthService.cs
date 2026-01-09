@@ -20,14 +20,12 @@ namespace Logic.Services
 
         public void Register(UserRegisterRequest request)
         {
-            // Basic defensive checks (logic-level)
-            if (string.IsNullOrWhiteSpace(request.Email) ||
-                string.IsNullOrWhiteSpace(request.Username) ||
-                string.IsNullOrWhiteSpace(request.Password))
-            {
-                throw new ArgumentException("Invalid registration data.");
-            }
+            // Validate input
+            var validationErrors = ValidateRegistyerRequest(request);
 
+            if (validationErrors != null) 
+                throw new ArgumentException(string.Join("; ", validationErrors));
+            
             // Normalize input
             var email = request.Email.Trim().ToLowerInvariant();
             var username = request.Username.Trim();
@@ -59,11 +57,10 @@ namespace Logic.Services
 
         public User Login(LoginRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.EmailOrUsername) ||
-                string.IsNullOrWhiteSpace(request.Password))
-            {
-                throw new ArgumentException("Invalid login data.");
-            }
+            // Validate input
+            var validationErrors = ValidateLoginRequest(request);
+            if (validationErrors != null) 
+                throw new ArgumentException(string.Join("; ", validationErrors));
 
             UserDto? userDto;
 
@@ -94,6 +91,41 @@ namespace Logic.Services
                 throw new ArgumentException("User is archived");
 
             return user;
+        }
+
+        public static List<string> ValidateRegistyerRequest(UserRegisterRequest request)
+        {
+            var errors = new List<string>();
+            if (string.IsNullOrWhiteSpace(request.Email) ||
+                !request.Email.Contains("@"))
+            {
+                errors.Add("Invalid email format.");
+            }
+            if (string.IsNullOrWhiteSpace(request.Username) ||
+                request.Username.Length < 3)
+            {
+                errors.Add("Username must be at least 3 characters long.");
+            }
+            if (string.IsNullOrWhiteSpace(request.Password) ||
+                request.Password.Length < 6)
+            {
+                errors.Add("Password must be at least 6 characters long.");
+            }
+            return errors;
+        }
+
+        public static List<string> ValidateLoginRequest(LoginRequest request)
+        {
+            var errors = new List<string>();
+            if (string.IsNullOrWhiteSpace(request.EmailOrUsername))
+            {
+                errors.Add("Email or Username is required.");
+            }
+            if (string.IsNullOrWhiteSpace(request.Password))
+            {
+                errors.Add("Password is required.");
+            }
+            return errors;
         }
     }
 }
