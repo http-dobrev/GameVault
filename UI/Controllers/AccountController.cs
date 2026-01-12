@@ -96,6 +96,7 @@ namespace UI.Controllers
             }
             catch (ArgumentException)
             {
+
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 return View(vm);
             }

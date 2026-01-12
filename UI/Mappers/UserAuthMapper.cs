@@ -21,7 +21,6 @@ namespace UI.Mappers
             {
                 EmailOrUsername = viewModel.EmailOrUsername,
                 Password = viewModel.Password,
-
             };
         }
     }

@@ -1,6 +1,4 @@
 ﻿using Logic.Dtos;
-using Logic.Mappers;
-using Logic.Entities;
 using Logic.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +48,7 @@ namespace Logic.Repos
         public UserDto? GetByEmail(string email)
         {
             const string sql = @"
-                SELECT Id, Username, Email, PasswordHash, Role, CreatedAt, IsArchived
+                SELECT Id, Username, Email, PasswordHash, CreatedAt, IsArchived, Role
                 FROM [User]
                 WHERE Email = @Email";
 
@@ -82,7 +80,7 @@ namespace Logic.Repos
         public UserDto? GetByUsername(string username)
         {
             const string sql = @"
-                SELECT Id, Username, Email, PasswordHash, Role, CreatedAt, IsArchived
+                SELECT Id, Username, Email, PasswordHash, CreatedAt, IsArchived, Role
                 FROM [User]
                 WHERE Username = @Username";
 
@@ -103,9 +101,9 @@ namespace Logic.Repos
                 Username = reader.GetString(reader.GetOrdinal("Username")),
                 Email = reader.GetString(reader.GetOrdinal("Email")),
                 PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
-                Role = reader.GetInt32(reader.GetOrdinal("Role")),
                 CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
-                IsArchived = reader.GetBoolean(reader.GetOrdinal("IsArchived"))
+                IsArchived = reader.GetBoolean(reader.GetOrdinal("IsArchived")),
+                Role = reader.GetInt32(reader.GetOrdinal("Role")),
             };
 
             return dto;

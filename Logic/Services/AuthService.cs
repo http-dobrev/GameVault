@@ -59,7 +59,7 @@ namespace Logic.Services
         {
             // Validate input
             var validationErrors = ValidateLoginRequest(request);
-            if (validationErrors != null) 
+            if (validationErrors.Any()) 
                 throw new ArgumentException(string.Join("; ", validationErrors));
 
             UserDto? userDto;
