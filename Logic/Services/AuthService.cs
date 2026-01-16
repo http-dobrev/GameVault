@@ -21,9 +21,9 @@ namespace Logic.Services
         public void Register(UserRegisterRequest request)
         {
             // Validate input
-            var validationErrors = ValidateRegistyerRequest(request);
+            var validationErrors = ValidateRegisterRequest(request);
 
-            if (validationErrors != null) 
+            if (validationErrors.Any()) 
                 throw new ArgumentException(string.Join("; ", validationErrors));
             
             // Normalize input
@@ -93,7 +93,7 @@ namespace Logic.Services
             return user;
         }
 
-        public static List<string> ValidateRegistyerRequest(UserRegisterRequest request)
+        public static List<string> ValidateRegisterRequest(UserRegisterRequest request)
         {
             var errors = new List<string>();
             if (string.IsNullOrWhiteSpace(request.Email) ||

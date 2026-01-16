@@ -1,6 +1,7 @@
 ﻿using Logic.Entities;
 using Logic.Enums;
 using Logic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
@@ -41,26 +42,29 @@ namespace UI.Controllers
 
         // GET: /Game/Details/5
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Details(Game game)
         {
-            try
-            {
-                var foundGame = _gameService.GetGame(game.Id);
-                if (foundGame == null)
-                {
-                    return NotFound();
-                }
-
-                var userId = GetUserIdFromClaims();
-                foundGame.IsOwned = _userGameService.GameExistsInUserLibrary(userId, foundGame.Id);
-
-                var vm = GameViewModelMapper.ToGameListViewModel(foundGame);
-                return View(vm);
-            }
-            catch (ArgumentException)
-            {
+            if (game.Id <= 0)
                 return BadRequest();
+
+            var foundGame = _gameService.GetGame(game.Id);
+            if (foundGame == null)
+                return NotFound();
+
+            bool isOwned = false;
+
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = GetUserIdFromClaims(); // this can assume authenticated now
+                isOwned = _userGameService.GameExistsInUserLibrary(userId, foundGame.Id);
             }
+
+            foundGame.IsOwned = isOwned;
+
+            var vm = GameViewModelMapper.ToGameListViewModel(foundGame);
+
+            return View(vm);
         }
 
         // GET: /Game/Create

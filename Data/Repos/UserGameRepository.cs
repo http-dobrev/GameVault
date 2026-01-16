@@ -84,7 +84,7 @@ namespace Logic.Repos
                                 INNER JOIN Genre gen ON g.GenreId = gen.Id
                                 INNER JOIN Developer dev ON g.DeveloperId = dev.Id
                                 INNER JOIN Publisher pub ON g.PublisherId = pub.Id
-                                WHERE ug.UserId = @UserId AND ug.GameId = GameId";
+                                WHERE ug.UserId = @UserId AND ug.GameId = @GameId";
 
             using var conn = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand(sql, conn);
